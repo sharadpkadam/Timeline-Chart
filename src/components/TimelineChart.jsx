@@ -6,7 +6,6 @@ import dayjs from "dayjs";
 import data from "../data/data.json";
 import { blue } from "@mui/material/colors";
 
-// Helper function to convert data
 const parseTimelineData = (data) => {
   const groups = [
     ...data.layers.map((layer) => {
@@ -25,7 +24,6 @@ const parseTimelineData = (data) => {
         title,
       };
     }),
-    // Add OverrideLayer and finalSchedule manually to groups
     { id: 99, title: "OverrideLayer" },
     { id: 100, title: "finalSchedule" }
   ];
@@ -41,27 +39,24 @@ const parseTimelineData = (data) => {
         userId: entry.userId,
       }))
     ),
-    // Example items for overrideLayer and finalSchedule
   ];
 
   return { groups, items };
 };
 
-// Generate unique color for each user
 const TimelineChart = () => {
   const { groups, items } = parseTimelineData(data);
   const [currentView, setCurrentView] = useState("month");
   const [visibleTimeStart, setVisibleTimeStart] = useState(dayjs().startOf("month").valueOf());
   const [visibleTimeEnd, setVisibleTimeEnd] = useState(dayjs().endOf("month").valueOf());
   const [selectedYear, setSelectedYear] = useState(dayjs().year());
-  const [selectedMonth, setSelectedMonth] = useState(dayjs().month() + 1); // month is 0-based
+  const [selectedMonth, setSelectedMonth] = useState(dayjs().month() + 1); 
 
   const getUserColor = (userId) => {
-    const hue = (userId * 137) % 360; // Fixed color logic based on userId
+    const hue = (userId * 137) % 360; 
     return `hsl(${hue}, 70%, 70%)`;
   };
 
-  // Function to update view range based on selected year, month, and view type
   const updateViewRange = (view) => {
     const startOfMonth = dayjs().year(selectedYear).month(selectedMonth - 1).startOf("month");
     const endOfMonth = startOfMonth.endOf("month");
@@ -101,23 +96,22 @@ const TimelineChart = () => {
   };
 
   useEffect(() => {
-    updateViewRange(currentView); // Ensure the time range updates when the view is changed
+    updateViewRange(currentView); 
   }, [currentView, selectedYear, selectedMonth]);
 
 
   const handleTodayButton = () => {
     const today = dayjs();
     setSelectedYear(today.year());
-    setSelectedMonth(today.month() + 1); // month is 0-based in dayjs
+    setSelectedMonth(today.month() + 1); 
 
-    // Set the visible time range for the current day
     const dayStart = today.startOf("day");
     const dayEnd = today.endOf("day");
 
     setVisibleTimeStart(dayStart.valueOf());
     setVisibleTimeEnd(dayEnd.valueOf());
 
-    // Update the view to "day" if it's not already
+
     setCurrentView("day");
   };
 
@@ -140,14 +134,13 @@ const TimelineChart = () => {
   return (
       <Box>
           <h1 className="heading" style={{display:"flex", justifyContent:"center"}}>Timeline-Chart</h1>
-          {/* Navigation Buttons */}
+
           <Box sx={{ display: "flex", justifyContent: "space-between", marginTop: "16px" }}>
           <Button onClick={handlePreviousButton}>Previous</Button>
           <Button onClick={handleTodayButton}>Today</Button>
           <Button onClick={handleNextButton}>Next</Button>
         </Box>
 
-      {/* View Toggle and other UI components */}
       <Box sx={{ mb: 2, display: "flex", justifyContent: "space-between" }}>
         <Button onClick={() => setCurrentView("month")} sx={{ backgroundColor: blue, color: "#black", '&:hover': { backgroundColor: "#66bb6a" } }}>Month</Button>
         <Button onClick={() => setCurrentView("2-weeks")} sx={{ backgroundColor: blue, color: "#black", '&:hover': { backgroundColor: "#66bb6a" } }}>2-Weeks</Button>
